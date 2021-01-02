@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<showtime>
+  <time>
+    <hour>9:30 AM</hour>
+    <date> mon</date>
+
+  </time>
+  <time>
+    <hour>12:30 AM</hour>
+    <date> mon</date>
+  </time>
+  <time>
+    <hour>3:30 PM</hour>
+     <date> mon</date>
+  </time>
+  <time>
+    <hour>8:40 AM</hour>
+     <date> mon</date>
+  </time>
+</showtime>
+

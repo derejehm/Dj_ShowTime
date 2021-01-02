@@ -13,7 +13,7 @@ class NowShowing extends StatefulWidget {
 class _NowShowingState extends State<NowShowing> {
   bool _isInit = true;
   bool _isLoading = false;
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -33,6 +33,7 @@ class _NowShowingState extends State<NowShowing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text(
             "Now Showing",

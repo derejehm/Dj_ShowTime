@@ -38,7 +38,7 @@ class MoviesProvider with ChangeNotifier {
 
         var extractedData = json.decode(response.body) as Map<String, dynamic>;
 
-        print("extracted data : ${extractedData.length}");
+        //  print("extracted data : ${extractedData.length}");
 
         if (extractedData == null) {
           return;
@@ -70,7 +70,7 @@ class MoviesProvider with ChangeNotifier {
 
       _items = loadedData;
 
-      print("Total Lenght: ${loadedData.length}");
+      //print("Total Lenght: ${loadedData.length}");
       notifyListeners();
     } catch (e) {
       throw e;

@@ -1,3 +1,6 @@
+import 'package:DjShowTime/provider/schedule_xml_provider.dart';
+import 'package:DjShowTime/screens/seat_selector.dart';
+import 'package:DjShowTime/widgets/movie_detail_card.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,107 +17,58 @@ class MovieDetails extends StatefulWidget {
   _MovieDetailsState createState() => _MovieDetailsState();
 }
 
+var color = Colors.white;
+var text = Colors.black;
+var _selectedIndex = 0;
+
 class _MovieDetailsState extends State<MovieDetails> {
   var _selectedValue;
+  bool _isInit = true;
+  bool _isLoading = false;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<ScheduleXmlProvier>(context)
+          .fetchAndSetSchedule()
+          .then((value) => {
+                setState(() {
+                  _isLoading = false;
+                }),
+              });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     final id =
         ModalRoute.of(context).settings.arguments as String; // is the id!
-    final loadedProduct = Provider.of<MoviesProvider>(
+    final loadedMovie = Provider.of<MoviesProvider>(
       context,
       listen: false,
     ).findById(id);
+    final scheduleItem = Provider.of<ScheduleXmlProvier>(context).items;
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(loadedProduct.title, style: TextStyle(color: Colors.white)),
+        title: Text(loadedMovie.title, style: TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            MovieDetailCard(loadedMovie),
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Card(
-                child: Column(
-                  children: <Widget>[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Hero(
-                        tag: 'poster',
-                        child: Image.network(
-                          loadedProduct.poster,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      loadedProduct.title,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FlatButton.icon(
-                          onPressed: null,
-                          icon: Icon(Icons.star_border),
-                          label: Text('${loadedProduct.rating}'),
-                        ),
-                        FlatButton.icon(
-                          onPressed: null,
-                          icon: Icon(Icons.schedule),
-                          label: Text('${loadedProduct.runtime}'),
-                        ),
-                        FlatButton.icon(
-                          onPressed: null,
-                          icon: Icon(Icons.theaters_outlined),
-                          label: Text('3D'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Synopsis',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Spacer(),
-                  FlatButton(
-                      onPressed: null,
-                      child: Text(loadedProduct.genre.split(',')[0])),
-                  FlatButton(
-                      onPressed: null,
-                      child: Text(loadedProduct.genre.split(',')[1])),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              child: Text(
-                loadedProduct.plot,
-                textAlign: TextAlign.justify,
-                softWrap: true,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text('Date', textAlign: TextAlign.right),
+              child: Text('Date', style: TextStyle(fontSize: 20)),
             ),
             Container(
               margin: EdgeInsets.all(10),
@@ -130,11 +84,63 @@ class _MovieDetailsState extends State<MovieDetails> {
                   // New date selected
                   setState(() {
                     _selectedValue = date;
-                    print(_selectedValue);
+                    // print(_selectedValue);
                   });
                 },
               ),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text('Time', style: TextStyle(fontSize: 20)),
+            ),
+            Container(
+              margin: EdgeInsets.all(15.0),
+              padding: EdgeInsets.all(15.0),
+              height: 250,
+              child: ListView.builder(
+                itemCount: scheduleItem.length,
+                itemBuilder: (context, index) {
+                  return RaisedButton(
+                    color: _selectedIndex == index
+                        ? Theme.of(context).primaryColor
+                        : color,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side:
+                            BorderSide(color: Theme.of(context).primaryColor)),
+                    child: Text(
+                      index == 0
+                          ? scheduleItem[index].hour + " (Available)"
+                          : scheduleItem[index].hour + " (Not-Available)",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: _selectedIndex == index ? Colors.white : text),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+            FlatButton(
+              color: Theme.of(context).primaryColor,
+              onPressed: () {},
+              child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(SeatSelector.routeName,
+                        arguments:
+                            '${loadedMovie.title},${_selectedValue ?? DateTime.now()},${scheduleItem[_selectedIndex].hour}');
+                  },
+                  title: Text(
+                    "Continue to seat selector",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(Icons.arrow_forward, color: Colors.white)),
+            ),
           ],
         ),
       ),

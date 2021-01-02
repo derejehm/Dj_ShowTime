@@ -16,20 +16,17 @@ class MovieItem extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Hero(
-            tag: 'poster',
-            child: GridTile(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    MovieDetails.routeName,
-                    arguments: id,
-                  );
-                },
-                child: Image.network(
-                  poster,
-                  fit: BoxFit.cover,
-                ),
+          child: GridTile(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  MovieDetails.routeName,
+                  arguments: id,
+                );
+              },
+              child: Image.network(
+                poster,
+                fit: BoxFit.cover,
               ),
             ),
           ),

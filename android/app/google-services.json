@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "158692956437",
+    "project_id": "djshowtime-2799e",
+    "storage_bucket": "djshowtime-2799e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158692956437:android:014ce963596fe6b167711c",
+        "android_client_info": {
+          "package_name": "com.example.DjShowTime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "158692956437-3dff5jdu89pk8d19ctvil1s4p9tjj8rk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChoyoKsgIJD9VGekyz-aEncx1Xx8RU1bI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "158692956437-3dff5jdu89pk8d19ctvil1s4p9tjj8rk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
